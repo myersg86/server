@@ -196,24 +196,26 @@
 					sorter: function (q, items) { return items; }
 				},
 				displayTpl: function (item) {
-					return '<li>'
-						+ '<span class="avatar-name-wrapper">'
-						+ '<div class="avatar" '
-						+ ' data-username="' + escapeHTML(item.id) + '"'	// for avatars
-						+ ' data-user="' + escapeHTML(item.id) + '"'		// for contactsmenu
-						+ ' data-user-display-name="' + escapeHTML(item.label) + '"></div>'
-						+ ' <strong>' + escapeHTML(item.label) + '</strong>'
-						+ '</span></li>';
+					return '<li>' +
+						'<span class="avatar-name-wrapper">' +
+							'<span class="avatar" ' +
+									'data-username="' + escapeHTML(item.id) + '" ' + // for avatars
+									'data-user="' + escapeHTML(item.id) + '" ' + // for contactsmenu
+									'data-user-display-name="' + escapeHTML(item.label) + '">' +
+							'</span>' +
+							'<strong>' + escapeHTML(item.label) + '</strong>' +
+						'</span></li>';
 				},
 				insertTpl: function (item) {
-					return ''
-						+ '<span class="avatar-name-wrapper">'
-						+ '<div class="avatar" '
-						+ ' data-username="' + escapeHTML(item.id) + '"'	// for avatars
-						+ ' data-user="' + escapeHTML(item.id) + '"'		// for contactsmenu
-						+ ' data-user-display-name="' + escapeHTML(item.label) + '"></div>'
-						+ ' <strong>' + escapeHTML(item.label) + '</strong>'
-						+ '</span>';
+					return '' +
+						'<span class="avatar-name-wrapper">' +
+							'<span class="avatar" ' +
+									'data-username="' + escapeHTML(item.id) + '" ' + // for avatars
+									'data-user="' + escapeHTML(item.id) + '" ' + // for contactsmenu
+									'data-user-display-name="' + escapeHTML(item.label) + '">' +
+							'</span>' +
+							'<strong>' + escapeHTML(item.label) + '</strong>' +
+						'</span>';
 				},
 				searchKey: "label"
 			});
@@ -224,7 +226,7 @@
 					// passing the whole comments form would re-apply and request
 					// avatars from the server
 					$(je.target).find(
-						'div[data-username="' + $el.find('[data-username]').data('username') + '"]'
+						'span[data-username="' + $el.find('[data-username]').data('username') + '"]'
 					).parent(),
 					editionMode
 				);
@@ -440,14 +442,13 @@
 				return;
 			}
 
-			$el.find('.avatar').each(function() {
-				var avatar = $(this);
-				var strong = $(this).next();
-				var appendTo = $(this).parent();
+			$el.find('.avatar-name-wrapper').each(function() {
+				var $this = $(this);
+				var $avatar = $this.find('.avatar');
 
-				var username = $(this).data('username');
-				if (username !== oc_current_user) {
-					$.merge(avatar, strong).contactsMenu(avatar.data('user'), 0, appendTo);
+				var user = $avatar.data('user');
+				if (user !== OC.getCurrentUser().uid) {
+					$this.contactsMenu(user, 0, $this);
 				}
 			});
 		},
@@ -486,20 +487,22 @@
 		},
 
 		_composeHTMLMention: function(uid, displayName) {
-			var avatar = '<div class="avatar" '
-				+ 'data-username="' + _.escape(uid) + '"'
-				+ ' data-user="' + _.escape(uid) + '"'
-				+ ' data-user-display-name="'
-				+ _.escape(displayName) + '"></div>';
+			var avatar = '' +
+				'<span class="avatar" ' +
+						'data-username="' + _.escape(uid) + '" ' +
+						'data-user="' + _.escape(uid) + '" ' +
+						'data-user-display-name="' + _.escape(displayName) + '">' +
+				'</span>';
 
 			var isCurrentUser = (uid === OC.getCurrentUser().uid);
 
-			return ''
-				+ '<span class="atwho-inserted" contenteditable="false">'
-				+ '<span class="avatar-name-wrapper' + (isCurrentUser ? ' currentUser' : '') + '">'
-				+ avatar + ' <strong>'+ _.escape(displayName)+'</strong>'
-				+ '</span>'
-				+ '</span>';
+			return '' +
+				'<span class="atwho-inserted" contenteditable="false">' +
+					'<span class="avatar-name-wrapper' + (isCurrentUser ? ' currentUser' : '') + '">' +
+						avatar +
+						'<strong>' + _.escape(displayName) + '</strong>' +
+					'</span>' +
+				'</span>';
 		},
 
 		nextPage: function() {

@@ -39,6 +39,17 @@ interface IRegistry {
 	public function register(IReporter $reporter);
 
 	/**
+	 * Delegate breadcrumb collection to all registered reporters
+	 *
+	 * @param string $message
+	 * @param string $category
+	 * @param array $context
+	 *
+	 * @since 15.0.0
+	 */
+	public function delegateBreadcrumb(string $message, string $category, array $context = []);
+
+	/**
 	 * Delegate crash reporting to all registered reporters
 	 *
 	 * @since 13.0.0
